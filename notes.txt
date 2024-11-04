@@ -1,0 +1,42 @@
+** HOW TO RUN **
+- e2e-rag-using-bedrock-kb-cfn (https://aws.amazon.com/blogs/machine-learning/build-an-end-to-end-rag-solution-using-knowledge-bases-for-amazon-bedrock-and-aws-cloudformation/)
+  * Go to London (eu-west-2)
+  * Deploy Lambda powertool layer Additional lambda layer: https://serverlessrepo.aws.amazon.com/applications/eu-west-1/057560766410/aws-lambda-powertools-python-layer
+  * Run sh deploy.sh
+  * Create bucket `input-e2e-rag`
+  * Create stack using AWS console with these values:
+    - Template: https://e2e-rag-deployment-611215368770-eu-west-2.s3.amazonaws.com/templates/main-template-out.yml
+    - Stack name: e2e-rag
+    - Bucket name: input-e2e-rag
+  * Once stack is created, upload PDFs to `input-e2e-rag` bucket
+  * Synchronize the Knowledge Base's data source
+  * Test the Knowledge Base by asking some questions
+
+NOTES:
+  * To generate responses it seems only works with Claude 3 Sonnet (https://www.reddit.com/r/aws/comments/1c4lbko/testing_knowledge_base_in_amazon_bedrock_does_not/)
+
+- contextual-chatbot-using-knowledgebase (https://github.com/aws-samples/amazon-bedrock-samples/tree/main/rag-solutions/contextual-chatbot-using-knowledgebase)
+  * Create `lambdalayer` folder in `input-e2e-rag` bucket
+  * Upload `knowledgebase_lambdalayer.zip` in bucket
+  * Create stack from rag-solutions/contextual-chatbot-using-knowledgebase/cfn/DeployKnowledgeBase.yaml
+    - Stack name: e2e-rag-lambda
+    - Knowledge Base ID: FWA5YOA31J
+    - Lambda layer bucket name: input-e2e-rag
+
+  * Run streamlit application
+    python3 -m streamlit run chatbot.py
+  * Ask questions
+
+** CLEAN UP **
+- Empty and delete input-e2e-rag
+- Delete `e2e-rag-lambda` stack and wait
+- Delete `cf-templates-XXXXX-eu-west-2` bucket
+- Delete `e2e-rag` stack and wait
+- Empty and delete `e2e-rag-deployment-611215368770-eu-west-2` bucket
+
+
+** QUESTIONS **
+- What run type is when all portfolios with foreign assets from a Transfer IN need to be sold?
+- Which run is used for testing purposes?
+- In which phase Capital Markets checks limits & different sanity checks? Provide as much detail of the phase as you can
+- In which phase Capital Markets checks limits & different sanity checks? Provide a broad phase name
